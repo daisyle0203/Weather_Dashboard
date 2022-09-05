@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="weather-app">
+      <div class="container">
+        <h3 class="brand">Weather Dashboard</h3>
+        <div>
+          <h1 class="temp">90&#176;</h1>
+          <div class="city-time">
+            <h1 class="name">Dallas</h1>
+            <small>
+              <span class="time">03:39</span>
+              -
+              <span class="date">Monday Sep 5</span>
+            </small>
+          </div>
+        <div class="weather">
+          <img src="images/icons/day/113.png" alt="icon" class="icon" />
+          <span class="condition">Sunny</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <form id="locationInput">
+        <input type="text" class="search" placeholder="Search for a city" />
+        <button type="submit" class="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+      <ul class="cities">
+        <li class="city"></li>
+        <li class="city"></li>
+        <li class="city"></li>
+        <li class="city"></li>
+      </ul>
+      <ul class="details">
+        <h4>Weather Details</h4>
+        <li>
+          <span>Wind</span>
+          <span class="wind">6.67MPH</span>
+        </li>
+        <li>
+          <span>Humidity</span>
+          <span class="cloud">50%</span>
+        </li>
+        <li>
+          <span>UV index</span>
+          <span class="cloud">0.47</span>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
