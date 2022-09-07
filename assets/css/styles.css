@@ -79,6 +79,10 @@ h3 {
   margin: 0.5em 0;
 }
 
+.icon {
+  height: 4em;
+}
+
 .panel {
   position: absolute;
   width: 40%;
@@ -107,7 +111,7 @@ h3 {
   margin: 0;
   border: none;
   outline: none;
-  background: #315178;
+  background: #fa6d1b;
   color: #fff;
   cursor: pointer;
   font-size: 1.2em;
