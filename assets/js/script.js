@@ -13,11 +13,11 @@ let form = document.querySelector("#locationInput")
 let searchInput = document.querySelector(".searchInput")
 let btn = document.querySelector(".submit")
 let cities = document.querySelectorAll(".city")
-
 let citiesUl = document.querySelector(".cities")
 
 let apiKey = "26e579ef41bf4a9eb3fa2ddb685cf5c5"
 
+// Function to render city list
 function renderCities(cities) {
   // reset html list
   citiesUl.innerHTML = ""
@@ -82,11 +82,12 @@ form.addEventListener("submit", (e) => {
     if (cityArr.length === 5) {
       cityArr.shift()
     }
+    // Put the clicked city in the city array
     cityArr.push(cityInput)
+    // Render the saved cities on the list
     renderCities(cityArr)
     // Save the city input in the local storage
     localStorage.setItem("cityInput", JSON.stringify(cityArr))
-
     // Call the fetchWeatherDate function to display the data
     fetchWeatherData()
     // Remove all the text from the search bar
@@ -139,7 +140,7 @@ function fetchWeatherData() {
           if (currentTime > sunrise && currentTime < sunset) {
             timeOfDay = "day"
           }
-          // Set the background image to rain if the weather is rainy and change button color
+          // Set the background image to rain if the weather is rainy
           if (
             code == 200 ||
             code == 201 ||
@@ -160,8 +161,13 @@ function fetchWeatherData() {
             code == 522
           ) {
             app.style.backgroundImage = `url(./assets/images/bg/${timeOfDay}/rain.jpg)`
+            btn.style.background = "#647d75"
+            // Change button color if it's night time
+            if (timeOfDay == "night") {
+              btn.style.background = "#325c80"
+            }
           }
-          // Set the background image to snow if the weather is snowy and change button color
+          // Set the background image to snow if the weather is snowy
           else if (
             code == 600 ||
             code == 601 ||
@@ -174,8 +180,13 @@ function fetchWeatherData() {
             code == 623
           ) {
             app.style.backgroundImage = `url(./assets/images/bg/${timeOfDay}/snow.jpg)`
+            btn.style.background = "#4d72aa"
+            // Change button color if it's night time
+            if (timeOfDay == "night") {
+              btn.style.background = "#1b1b1b"
+            }
           }
-          // Set the background image to cloud if the weather is cloudy and change button color
+          // Set the background image to cloud if the weather is cloudy
           else if (
             code == 700 ||
             code == 711 ||
@@ -187,12 +198,20 @@ function fetchWeatherData() {
             code == 900
           ) {
             app.style.backgroundImage = `url(./assets/images/bg/${timeOfDay}/cloud.jpg)`
-            btn.style.background = "#181e27"
+            btn.style.background = "#fa6d1b"
+            // Change button color if it's night time
+            if (timeOfDay == "night") {
+              btn.style.background = "#181e27"
+            }
           }
-          // Set the background image to clear if the weather is clear and change button color
-          else if (code == 800 || code == 802) {
+          // Set the background image to clear if the weather is clear
+          else {
             app.style.backgroundImage = `url(./assets/images/bg/${timeOfDay}/clear.jpg)`
-            btn.style.background = ""
+            btn.style.background = "#fa6d1b"
+            // Change button color if it's night time
+            if (timeOfDay == "night") {
+              btn.style.background = "#181e27"
+            }
           }
 
           // Fade in the page once all is done
