@@ -41,7 +41,6 @@ function renderCities(cities) {
 function renderForecast(data, timezone) {
   // reset day section
   daySection.innerHTML = ""
-
   for (let day of data) {
     let dayCardDiv = document.createElement("div")
     dayCardDiv.classList.add("day-card")
@@ -61,25 +60,25 @@ function renderForecast(data, timezone) {
     iconSmallImg.src = `./assets/images/icons/${day.weather.icon}.png`
 
     let tempSpan = document.createElement("span")
-    tempSpan.textContent = "Temp"
+    tempSpan.textContent = ""
 
     let tempSmallSpan = document.createElement("span")
     tempSmallSpan.classList.add("temp-small")
-    tempSmallSpan.textContent = day.temp
+    tempSmallSpan.textContent = "Temp: " + day.temp + " \u2109"
 
     let windSpan = document.createElement("span")
-    windSpan.textContent = "Wind"
+    windSpan.textContent = ""
 
     let windSmallSpan = document.createElement("span")
     windSmallSpan.classList.add("wind-small")
-    windSmallSpan.textContent = day.wind_spd
+    windSmallSpan.textContent = "Wind: " + day.wind_spd + " MHP"
 
     let humiditySpan = document.createElement("span")
-    humiditySpan.textContent = "Humidity"
+    humiditySpan.textContent = ""
 
     let humiditySmallSpan = document.createElement("span")
     humiditySmallSpan.classList.add("humidity-small")
-    humiditySmallSpan.textContent = day.rh
+    humiditySmallSpan.textContent = "Humidity: " + day.rh + " %"
 
     dayCardDiv.appendChild(dayCardDateSpan)
     dayCardDiv.appendChild(iconSmallImg)
@@ -89,7 +88,6 @@ function renderForecast(data, timezone) {
     dayCardDiv.appendChild(windSmallSpan)
     dayCardDiv.appendChild(humiditySpan)
     dayCardDiv.appendChild(humiditySmallSpan)
-
     daySection.appendChild(dayCardDiv)
   }
 }
@@ -115,6 +113,7 @@ citiesUl.addEventListener("click", (e) => {
     console.log(cityInput)
     // Fetch and display the data from Weather API
     fetchCurrentWeatherData()
+    fetchWeatherForecastData()
     // Fade out the app
     app.style.opacity = "0"
   }
@@ -175,15 +174,12 @@ function fetchCurrentWeatherData() {
           uvOutput.innerHTML = data.uv
           // Get the current time in milliseconds
           let currentTime = new Date().getTime()
-          console.log(currentTime)
           // Turn the current time to a string
           let currentTimeString = new Date().toLocaleString("en-US", {
             timeZone: resData.timezone,
           })
-          console.log(currentTimeString)
           // Split the current time string to 2 separate string by ","
           let dtArray = currentTimeString.split(",")
-          console.log(dtArray)
           // Set the time and date text
           timeOutput.innerHTML = dtArray[1]
           dateOutput.innerHTML = dtArray[0]
@@ -192,12 +188,12 @@ function fetchCurrentWeatherData() {
           // Get the unique id for each weather condition
           let code = data.weather.code
           // Change to night if it's night time
-          let sunrise = new Date(dtArray[0], data.sunrise).getTime()
-          console.log(sunrise)
-          let sunset = new Date(dtArray[0], data.sunset).getTime()
-          console.log(sunset)
+          let sunriseMs = new Date(dtArray[0] + " " + data.sunrise).getTime()
+          let sunset = new Date(dtArray[0] + " " + data.sunset)
+          sunset.setDate(sunset.getDate() + 1)
+          let sunsetMs = sunset.getTime()
 
-          if (currentTime > sunrise && currentTime < sunset) {
+          if (currentTime > sunriseMs && currentTime < sunsetMs) {
             timeOfDay = "day"
           }
           // Set the background image to rain if the weather is rainy
