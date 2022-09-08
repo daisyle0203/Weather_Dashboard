@@ -15,6 +15,7 @@ h3 {
   font-weight: 400;
 }
 
+/* The whole app styles */
 .weather-app {
   min-height: 100vh;
   background-image: url(../images/bg/day/clear.jpg);
@@ -51,6 +52,7 @@ h3 {
   padding: 2em 3em 4em 3em;
 }
 
+/* The container styles */
 .container > div {
   display: flex;
   justify-content: center;
@@ -86,6 +88,41 @@ h3 {
   font-size: 0.55em;
 }
 
+/* The weather forecast card styles */
+.day-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  gap: 0.5em;
+}
+
+.day-card-date {
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+.day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid hsl(200, 100%, 10%);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  background: rgba(110, 110, 110, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 1;
+}
+
+.icon-small {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+/* The search panel and weather detail styles*/
 .panel {
   position: absolute;
   width: 40%;
@@ -175,39 +212,7 @@ h3 {
   align-items: center;
 }
 
-.day-section {
-  display: flex;
-  justify-content: space-between;
-  padding: 1em;
-  gap: 0.5em;
-}
-
-.day-card-date {
-  font-size: 0.75rem;
-  color: hsl(200, 100%, 20%);
-}
-
-.day-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid hsl(200, 100%, 10%);
-  border-radius: 0.25rem;
-  padding: 1rem;
-  background: rgba(110, 110, 110, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  z-index: 1;
-}
-
-.weather-icon {
-  width: 40px;
-  height: 40px;
-  object-fit: none;
-}
-
+/* Media query for different screen sizes */
 @media screen and (max-width: 800px) {
   .panel,
   .container {

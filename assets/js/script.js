@@ -1,4 +1,4 @@
-// Get elements that we need from the dom
+// Get all the necessary elements from the dom
 let app = document.querySelector(".weather-app")
 let temp = document.querySelector(".temp")
 let dateOutput = document.querySelector(".date")
@@ -12,9 +12,16 @@ let uvOutput = document.querySelector(".uv")
 let form = document.querySelector("#locationInput")
 let searchInput = document.querySelector(".searchInput")
 let btn = document.querySelector(".submit")
-let cities = document.querySelectorAll(".city")
 let citiesUl = document.querySelector(".cities")
 
+let smallDateOutput = document.querySelector(".date-card-date")
+let smallIcon = document.querySelector(".icon-small")
+let smallTempOutput = document.querySelector(".temp-small")
+let smallWindOutput = document.querySelector(".wind-small")
+let smallHumidityOutput = document.querySelector(".humidity-small")
+let daySection = document.querySelector(".day-section")
+
+// Store aip key in a variable
 let apiKey = "26e579ef41bf4a9eb3fa2ddb685cf5c5"
 
 // Function to render city list
@@ -30,29 +37,74 @@ function renderCities(cities) {
   }
 }
 
+// Function to render 5 day forecast cards
+function renderForecast(data, timezone) {
+  // reset day section
+  daySection.innerHTML = ""
+
+  for (let day of data) {
+    let dayCardDiv = document.createElement("div")
+    dayCardDiv.classList.add("day-card")
+
+    let dayCardDateSpan = document.createElement("span")
+    dayCardDateSpan.classList.add("day-card-date")
+    let date = new Date(day.datetime)
+    date.setDate(date.getDate() + 1)
+    let dateString = date.toLocaleString("en-US", {
+      timeZone: timezone,
+    })
+    dayCardDateSpan.textContent = dateString.split(",")[0]
+
+    let iconSmallImg = document.createElement("img")
+    iconSmallImg.classList.add("icon-small")
+    iconSmallImg.alt = "weather icon"
+    iconSmallImg.src = `./assets/images/icons/${day.weather.icon}.png`
+
+    let tempSpan = document.createElement("span")
+    tempSpan.textContent = "Temp"
+
+    let tempSmallSpan = document.createElement("span")
+    tempSmallSpan.classList.add("temp-small")
+    tempSmallSpan.textContent = day.temp
+
+    let windSpan = document.createElement("span")
+    windSpan.textContent = "Wind"
+
+    let windSmallSpan = document.createElement("span")
+    windSmallSpan.classList.add("wind-small")
+    windSmallSpan.textContent = day.wind_spd
+
+    let humiditySpan = document.createElement("span")
+    humiditySpan.textContent = "Humidity"
+
+    let humiditySmallSpan = document.createElement("span")
+    humiditySmallSpan.classList.add("humidity-small")
+    humiditySmallSpan.textContent = day.rh
+
+    dayCardDiv.appendChild(dayCardDateSpan)
+    dayCardDiv.appendChild(iconSmallImg)
+    dayCardDiv.appendChild(tempSpan)
+    dayCardDiv.appendChild(tempSmallSpan)
+    dayCardDiv.appendChild(windSpan)
+    dayCardDiv.appendChild(windSmallSpan)
+    dayCardDiv.appendChild(humiditySpan)
+    dayCardDiv.appendChild(humiditySmallSpan)
+
+    daySection.appendChild(dayCardDiv)
+  }
+}
+
+// Create an empty array to store the clicked cities
 let cityArr = []
 // Get the stored city input in the local storage when the page reloads
 if (localStorage.getItem("cityInput")) {
   cityArr = JSON.parse(localStorage.getItem("cityInput"))
 }
-
+// Render the city list
 renderCities(cityArr)
 
 // Set a default city when the page loads
 let cityInput = "Austin, TX"
-
-// Add click event to each city in the panel
-cities.forEach((city) => {
-  city.addEventListener("click", (e) => {
-    // Change the  default city to the clicked one
-    cityInput = e.target
-    console.log(cityInput)
-    // Fetch and display the data from Weather API
-    fetchWeatherData()
-    // Fade out the app
-    app.style.opacity = "0"
-  })
-})
 
 // Add event listener to the citiesUl
 citiesUl.addEventListener("click", (e) => {
@@ -62,7 +114,7 @@ citiesUl.addEventListener("click", (e) => {
     cityInput = element.textContent
     console.log(cityInput)
     // Fetch and display the data from Weather API
-    fetchWeatherData()
+    fetchCurrentWeatherData()
     // Fade out the app
     app.style.opacity = "0"
   }
@@ -89,7 +141,7 @@ form.addEventListener("submit", (e) => {
     // Save the city input in the local storage
     localStorage.setItem("cityInput", JSON.stringify(cityArr))
     // Call the fetchWeatherDate function to display the data
-    fetchWeatherData()
+    fetchCurrentWeatherData()
     // Remove all the text from the search bar
     searchInput.value = ""
     // Fade out the app
@@ -97,11 +149,11 @@ form.addEventListener("submit", (e) => {
   }
 })
 
-// Function that fetches and displays the data from the weather API
-function fetchWeatherData() {
+// Function that fetches and displays the data from the current weather API
+function fetchCurrentWeatherData() {
   // Fetch the data and add the city name with template literals
   fetch(
-    ` https://api.weatherbit.io/v2.0/forecast/daily?city=${cityInput}&key=${apiKey}&units=I&days=5`
+    ` https://api.weatherbit.io/v2.0/current?city=${cityInput}&key=${apiKey}&units=I`
   )
     .then((response) => {
       if (response.ok) {
@@ -113,7 +165,7 @@ function fetchWeatherData() {
           temp.innerHTML = data.temp + "\u2109"
           conditionOutput.innerHTML = data.weather.description
           // Add the city name to the page
-          nameOutput.innerHTML = resData.city_name
+          nameOutput.innerHTML = data.city_name + ", " + data.state_code
           // Add the icon to the page
           let iconId = data.weather.icon
           icon.src = `./assets/images/icons/${iconId}.png`
@@ -121,21 +173,29 @@ function fetchWeatherData() {
           windOutput.innerHTML = data.wind_spd + "MPH"
           humidityOutput.innerHTML = data.rh + "%"
           uvOutput.innerHTML = data.uv
-          // Add the date and time
+          // Get the current time in milliseconds
           let currentTime = new Date().getTime()
+          console.log(currentTime)
+          // Turn the current time to a string
           let currentTimeString = new Date().toLocaleString("en-US", {
             timeZone: resData.timezone,
           })
+          console.log(currentTimeString)
+          // Split the current time string to 2 separate string by ","
           let dtArray = currentTimeString.split(",")
+          console.log(dtArray)
+          // Set the time and date text
           timeOutput.innerHTML = dtArray[1]
           dateOutput.innerHTML = dtArray[0]
-          // Set default time of day
+          // Set default time of day to night
           let timeOfDay = "night"
           // Get the unique id for each weather condition
           let code = data.weather.code
           // Change to night if it's night time
-          let sunrise = new Date(data.sunrise_ts * 1000).getTime()
-          let sunset = new Date(data.sunset_ts * 1000).getTime()
+          let sunrise = new Date(dtArray[0], data.sunrise).getTime()
+          console.log(sunrise)
+          let sunset = new Date(dtArray[0], data.sunset).getTime()
+          console.log(sunset)
 
           if (currentTime > sunrise && currentTime < sunset) {
             timeOfDay = "day"
@@ -226,8 +286,34 @@ function fetchWeatherData() {
     })
 }
 
+// // Function that fetches and displays the data from the forecast weather API
+function fetchWeatherForecastData() {
+  // Fetch the data and add the city name with template literals
+  fetch(
+    ` https://api.weatherbit.io/v2.0/forecast/daily?city=${cityInput}&key=${apiKey}&units=I&days=6`
+  )
+    .then((response) => {
+      if (response.ok) {
+        response.json().then((resData) => {
+          // Print the data to see what is available
+          console.log(resData)
+          let data = resData.data.slice(1)
+          renderForecast(data, resData.timezone)
+          // Fade in the page once all is done
+          app.style.opacity = "1"
+        })
+      }
+    })
+    // If the user types a city that doesn't exist, throw an alert
+    .catch(() => {
+      alert("City not found, please try again")
+      app.style.opacity = "1"
+    })
+}
+
 // Call the function on page load
-fetchWeatherData()
+fetchCurrentWeatherData()
+fetchWeatherForecastData()
 
 // Fade in the page
 app.style.opacity = "1"
