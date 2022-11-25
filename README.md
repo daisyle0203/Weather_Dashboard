@@ -26,4 +26,4 @@
 
 ---
 
-[Try it here!](https://daisyle0203.github.io/weather_app/)
+[Try the app here!](https://daisyle0203.github.io/Weather_Dashboard/)
